@@ -1,0 +1,8 @@
+Library/
+Temp/
+obj/
+*.sln
+*.csproj
+*.userprefs
+*.cd
+Build/
