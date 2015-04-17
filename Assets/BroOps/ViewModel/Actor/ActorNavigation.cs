@@ -19,8 +19,9 @@ namespace com.gamehound.broops.viewmodel
 
     public class ActorNavigation : MonoBehaviour
     {
-
         public NavMeshAgent agent;
+        Transform agentTransform;
+
         public NavMeshObstacle obstacle;
         public ActorMovementStrategy strategy;
 
@@ -30,10 +31,19 @@ namespace com.gamehound.broops.viewmodel
         public Vector3 spawnPoint = Vector3.zero;
 
         [HideInInspector]
-        public bool isChasing = true;
+        private float speed = 0.0f;
+        public float Speed
+        {
+            get
+            {
+                return agent.speed;
+            }
+            set
+            {
+                agent.speed = value;
+            }
+        }
 
-         [HideInInspector]
-        public float speed = 0.0f;
 
          [HideInInspector]
         public float acceleration = 0.0f;
@@ -43,19 +53,20 @@ namespace com.gamehound.broops.viewmodel
 
         [HideInInspector]
         public Vector3 destination = Vector3.zero;
-        private Vector3 oldDestination;
+
+        public float pauseBeforeMoveTime = 0.5f;
 
 
-        //Vector3 lastPosition = Vector3.zero;
-        bool pathChecked = true;
-        bool checkedIdle = false;
-
-        float dist = 0.0f;
-        float targetDist = 0.0f;
-        Vector3 newPosition = Vector3.zero;
-
-        Vector3 targetPosition = Vector3.zero;
-        Vector3 prevPosition = Vector3.zero;
+        protected float distanceToTarget = 0.0f;
+        public float DistanceToTarget
+        {
+            get
+            {
+                return distanceToTarget;
+            }
+        }
+        
+        
 
         void OnEnable()
         {
@@ -68,7 +79,6 @@ namespace com.gamehound.broops.viewmodel
 
         void OnDisable()
         {
-
             // TODO: setspawn method
             spawnPoint = new Vector3(spawnPoint.x, transform.position.y, spawnPoint.z);
 
@@ -79,62 +89,44 @@ namespace com.gamehound.broops.viewmodel
         // Use this for initialization
         void Start()
         {
-            destination = transform.position;
+            if (agent.transform != transform)
+                agentTransform = agent.transform;
         }
 
-        
-        void Update()
+
+        public virtual void Update()
         {
             // component collision check - NEVER CROSS THE STREAMS!!!!
             if (agent.enabled && obstacle.enabled)
                 obstacle.enabled = false;
 
-            switch(strategy)
+            distanceToTarget = Vector3.Distance(destination, agentTransform.position);
+
+        }
+
+        public virtual void SetDestination(Vector3 newDestination) { }
+
+        public virtual void StopMoving() {
+            state = ActorNavigationState.Idle;
+        }
+
+        public virtual void StartMoving()
+        {
+            obstacle.enabled = false;
+
+            if (!obstacle.isActiveAndEnabled)
             {
-                
-                case ActorMovementStrategy.Directed :
+                agent.enabled = true;
 
-                    if (!agent.hasPath)
-                    {
-                        if (!pathChecked)
-                        {
-                            pathChecked = true;
-                            agent.enabled = false;
-                            //Invoke("ObstacleOn", 0.1f);
-                            obstacle.enabled = true;
-                            //state = ActorNavigationState.Idle;
-                        }
-                    }
-
-                    if (destination != oldDestination)
-                    {
-                        if (agent.enabled)
-                            agent.destination = destination;
-                    }
-
-                    break;
-
-
-
-                default :
-
-                    if (Vector3.Distance(destination, agent.transform.position) <= agent.stoppingDistance + 1.0f) // bool isChasing = true;
-                    {
-                        if (!pathChecked)
-                        {
-
-                            if( agent.enabled )
-                            {
-                                pathChecked = true;
-                                agent.enabled = false;
-                                obstacle.enabled = true;
-                            }
-                        }
-                    }
-
-                    break;
+                if (agent.isActiveAndEnabled)
+                {
+                    agent.destination = destination;
+                    state = ActorNavigationState.Moving;
+                }
             }
         }
+
+
 
         public void OnConfigure( float Speed, float Aceeleration, float AngularSpeed )
         {
@@ -144,8 +136,9 @@ namespace com.gamehound.broops.viewmodel
 
             obstacle.enabled = false;
 
-            if( !obstacle.isActiveAndEnabled )
+            if (!obstacle.isActiveAndEnabled)
             {
+                
                 agent.enabled = true;
 
                 agent.ResetPath();
@@ -157,74 +150,21 @@ namespace com.gamehound.broops.viewmodel
                 agent.enabled = false;
                 obstacle.enabled = true;
             }
-
         }
 
-
-        public void SetDestination( Vector3 newDestination )
+        public void OnConfigure()
         {
-            switch(strategy)
-            {
-                case ActorMovementStrategy.Directed :
+            agent.enabled = false;
 
-                    destination = newDestination;
-                    obstacle.enabled = false;
-
-                    if (!obstacle.isActiveAndEnabled)
-                    {
-                        agent.enabled = true;
-                        agent.destination = destination;
-                        pathChecked = false;
-                    }
-
-                    break;
-
-
-
-
-                default :
-                    
-                    if (newDestination != destination)
-                    {
-                        dist = Vector3.Distance(agent.transform.position, destination);
-                        targetDist = Vector3.Distance(agent.transform.position, newDestination);
-
-                        if (targetDist > dist)
-                            destination = newDestination;
-
-                        if (targetDist > agent.stoppingDistance && dist > agent.stoppingDistance)
-                        {
-                            
-                            if (obstacle.enabled)
-                            {
-
-                                obstacle.enabled = false;
-
-                                if (!obstacle.isActiveAndEnabled)
-                                {
-                                    agent.enabled = true;
-                                    agent.ResetPath();
-
-                                    agent.destination = destination;
-                                    oldDestination = destination;
-
-                                    pathChecked = false;
-                                }
-                            }
-                            else if (agent.enabled)
-                            {
-                                
-                                agent.destination = destination;
-                                //state = ActorNavigationState.Moving;
-                            }
-                        }
-                        oldDestination = destination;
-                    }
-
-                    break;
-            }
-
-            
+            if (!agent.isActiveAndEnabled)
+                obstacle.enabled = true;
         }
+
+        protected virtual void OnIdle()
+        {
+            CancelInvoke("OnIdle");
+        }
+
+        
     }
 }

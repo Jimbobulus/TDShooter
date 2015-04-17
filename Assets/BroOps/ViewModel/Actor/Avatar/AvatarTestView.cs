@@ -12,6 +12,10 @@ namespace com.gamehound.broops.viewmodel
 	{
         public ActorNavigation navigation;
         public Transform graphics;
+
+        public float walkingSpeed = 3.5f;
+        public float runningSpeed = 7.0f;
+
         bool bindingSet = false;
 
         void OnEnable()
@@ -35,6 +39,8 @@ namespace com.gamehound.broops.viewmodel
 			modelBinding = model.modelID;
             bindingSet = true;
 
+            
+
 			OnConfigure();
 		}
 
@@ -44,6 +50,25 @@ namespace com.gamehound.broops.viewmodel
             if (!bindingSet) return;
             
             ModelLocator.Game.GetAvatarModel(modelBinding).CurrentPosition = graphics.position;
+
+
+            /*
+            // TODO: REMOVE TO PLAYER INPUT!!!!!
+            ///
+            if( Input.GetKeyDown(KeyCode.LeftControl ))
+            {
+                //var model = (AvatarTestModel)ModelLocator.Game.GetAvatarModel(modelBinding) as AvatarTestModel;
+                navigation.Speed = walkingSpeed;
+            }
+
+            if( Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                //var model = (AvatarTestModel)ModelLocator.Game.GetAvatarModel(modelBinding) as AvatarTestModel;
+                navigation.Speed = runningSpeed;
+            }
+            //
+            ////
+             * */
         }
 
 		
@@ -61,6 +86,36 @@ namespace com.gamehound.broops.viewmodel
                     navigation.SetDestination(ModelLocator.Game.GetAvatarModel(modelBinding).TargetMarkerPosition);
                 }
 			}
+
+            if( genEvent.token == AvatarTestModel.MOVEMENT_TYPE_CHANGED)
+            {
+                if (BindingCheck((object)ModelLocator.Game.GetAvatarModel(modelBinding), genEvent.sender))
+                {
+
+
+
+                    print((MovementType)genEvent.payload);
+
+                    switch( (MovementType)genEvent.payload )
+                    {
+                            
+                        case MovementType.walking :
+                            
+                            navigation.Speed = walkingSpeed;
+                            break;
+
+                        case MovementType.running :
+                           
+                            navigation.Speed = runningSpeed;
+                            break;
+
+                        default :
+                            navigation.Speed = ModelLocator.Game.GetAvatarModel(modelBinding).Speed;
+                            break;
+                    }
+                    //navigation.Speed = ModelLocator.Game.GetAvatarModel(modelBinding).Speed;
+                }
+            }
 		}
 
         protected override void OnConfigure()
@@ -69,7 +124,12 @@ namespace com.gamehound.broops.viewmodel
 
             var model = (AvatarTestModel)ModelLocator.Game.GetAvatarModel(modelBinding) as AvatarTestModel;
 
+            model.Speed = runningSpeed;
+            model.AngularSpeed = 2000.0f;
+            model.Acceleration = 20.0f;
+
             navigation.OnConfigure(model.Speed, model.Acceleration, model.AngularSpeed);
+            GetComponent<ActorLocomotion>().followSpeed = model.Speed;
         }
 
 

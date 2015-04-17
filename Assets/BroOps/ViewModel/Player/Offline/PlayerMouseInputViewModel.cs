@@ -39,6 +39,16 @@ namespace com.gamehound.broops.viewmodel
 				}
 			}
 
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                PointerCount = 2;
+            }
+
+            if (Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                PointerCount = 1;
+            }
+
 			base.Update();
 		}
 	}

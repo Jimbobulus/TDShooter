@@ -26,6 +26,31 @@ namespace com.gamehound.broops.viewmodel
 		
 		protected Vector3 target;
 
+        protected int pointerCount = 1;
+        public int PointerCount
+        {
+            get
+            {
+                return pointerCount;
+            }
+            set
+            {
+                pointerCount = value;
+
+                if (pointerCount == 1)
+                {
+                    //print("pointers "+pointerCount);
+
+                    ModelLocator.Game.GetAvatarModel(ModelLocator.Game.GetPlayerModel(modelBinding).SelectedAvatarBinding).ActorMovementType = MovementType.running;
+                }
+                else if (pointerCount == 2)
+                {
+                    //print("pointers " + pointerCount);
+                    ModelLocator.Game.GetAvatarModel(ModelLocator.Game.GetPlayerModel(modelBinding).SelectedAvatarBinding).ActorMovementType = MovementType.walking;
+                }
+            }
+        }
+
         protected Vector3 newCamPos = Vector3.zero;
 		protected Vector3 oldCamPos = Vector3.zero;
 		

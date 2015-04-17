@@ -6,11 +6,20 @@ using com.gamehound.broops.model.eventbus;
 
 namespace com.gamehound.broops.model
 {
+    public enum MovementType
+    {
+        walking,
+        running,
+        idle
+    }
+
 	public class ActorModelBase
 	{
 		public static string HEALTH_CHANGED = "This actors health has changed";
 		public static string INVINCIBLE = "This actor has toggled invincibility";
         public static string ENABLED = "This actor has toggled enabled";
+        public static string SPEED_CHANGED = "The actos speed setting has changed";
+        public static string MOVEMENT_TYPE_CHANGED = "The actos movement type has changed";
 		
 		private int health = 1;
 		public int Health
@@ -68,6 +77,7 @@ namespace com.gamehound.broops.model
 			set
 			{
 				speed = value;
+                ModelLocator.EventBus.DispatchGenericEvent(SPEED_CHANGED, this, speed);
 			}
 		}
 
@@ -96,6 +106,22 @@ namespace com.gamehound.broops.model
 				acceleration = value;
 			}
 		}
+
+
+        private MovementType actorMovementType;
+        public MovementType  ActorMovementType
+        {
+            get
+            {
+                return actorMovementType;
+            }
+            set
+            {
+                actorMovementType = value;
+                ModelLocator.EventBus.DispatchGenericEvent(MOVEMENT_TYPE_CHANGED, this, actorMovementType);
+            }
+        }
+
 
 
 		public readonly Guid modelID;

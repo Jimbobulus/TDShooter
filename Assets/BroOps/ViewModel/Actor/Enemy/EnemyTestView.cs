@@ -10,6 +10,7 @@ namespace com.gamehound.broops.viewmodel
 	public class EnemyTestView : EnemyViewBase 
 	{
         public ActorNavigation navigation;
+        public EnemyLocomotion locomotion;
         public Transform graphics;
 
 
@@ -37,13 +38,24 @@ namespace com.gamehound.broops.viewmodel
             }
 		}
 
-        /*
+        
 		void Update()
 		{
             if (!bindingSet) return;
 
+            if (navigation.state == ActorNavigationState.Idle)
+            {
+                //print("ATTACK!!");
+                locomotion.lookTarget = navigation.destination;
+                locomotion.state = navigation.state;
+            }
+            else if (navigation.state == ActorNavigationState.Moving)
+            {
+                //print("CHASE!!!");
+                locomotion.state = navigation.state;
+            }
 		}
-        */
+        
 
         
 
@@ -52,11 +64,11 @@ namespace com.gamehound.broops.viewmodel
 			base.OnConfigure();
 
             var model = ModelLocator.Game.GetEnemyModel( modelBinding );
-            navigation.OnConfigure(model.Speed, model.Acceleration, model.AngularSpeed);
-            navigation.isChasing = true;
+            navigation.OnConfigure();
+            //navigation.isChasing = true;
 
 
-            print("enemy configured");
+            //print("enemy configured");
 		}
          
 	}
