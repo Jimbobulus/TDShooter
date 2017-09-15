@@ -5,7 +5,7 @@ public class CameraPanFromInput : MonoBehaviour {
 
 	public Vector3 target;
 	public Transform targetMarker;
-	public NavMeshAgent agent;
+	public UnityEngine.AI.NavMeshAgent agent;
 	public Camera theCamera;
 	public float moveLimit = 10.0f;
 	public float cameraPanSpeedMultiplier = 1.0f;

@@ -9,7 +9,7 @@ namespace com.gamehound.broops.viewmodel
 {
 	public class EnemyViewModel : BaseViewModel 
 	{
-		public NavMeshAgent agent;
+		public UnityEngine.AI.NavMeshAgent agent;
 
 		public DamageTriggerViewModel damageTrigger;
 

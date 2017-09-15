@@ -28,7 +28,7 @@ public class PlayerAvatar : MonoBehaviour
 
 	private Material unselectedMaterial;
 
-	private NavMeshAgent agent;
+	private UnityEngine.AI.NavMeshAgent agent;
 
 	private bool canFire = true;
 
@@ -42,10 +42,10 @@ public class PlayerAvatar : MonoBehaviour
 
 	void Start () 
 	{
-		agent = GetComponent<NavMeshAgent>() as NavMeshAgent;
-		renderer = transform.FindChild("Graphics").GetComponent<Renderer>();
+		agent = GetComponent<UnityEngine.AI.NavMeshAgent>() as UnityEngine.AI.NavMeshAgent;
+		renderer = transform.Find("Graphics").GetComponent<Renderer>();
 		unselectedMaterial = renderer.material;
-		lineRenderer = transform.FindChild("Line").transform.GetComponent<LineRenderer>() as LineRenderer;
+		lineRenderer = transform.Find("Line").transform.GetComponent<LineRenderer>() as LineRenderer;
 		lineRenderer.enabled = false;
 		origColour = rangeUISprite.color;
 	}
@@ -112,7 +112,7 @@ public class PlayerAvatar : MonoBehaviour
 				if( enemy != null )
 				{
 					//if( Vector3.Distance( transform.position, enemy.position ) <= range )
-					if( enemy.GetComponent<NavMeshAgent>().enabled )
+					if( enemy.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled )
 					{
 						enemy.SendMessage( "TakeDamage", damage );
 

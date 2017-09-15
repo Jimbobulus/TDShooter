@@ -24,7 +24,7 @@ namespace com.gamehound.broops.viewmodel
 
 		public Transform targetMarker;
 
-		public NavMeshAgent agent;
+		public UnityEngine.AI.NavMeshAgent agent;
 
 		protected Vector3 target;
 

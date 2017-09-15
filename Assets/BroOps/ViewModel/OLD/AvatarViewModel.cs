@@ -18,7 +18,7 @@ namespace com.gamehound.broops.viewmodel
 
 		public Renderer renderer;
 
-		public NavMeshAgent agent;
+		public UnityEngine.AI.NavMeshAgent agent;
 
 		private bool checkedPath = false;
 

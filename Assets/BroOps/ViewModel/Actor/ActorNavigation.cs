@@ -19,10 +19,10 @@ namespace com.gamehound.broops.viewmodel
 
     public class ActorNavigation : MonoBehaviour
     {
-        public NavMeshAgent agent;
+        public UnityEngine.AI.NavMeshAgent agent;
         Transform agentTransform;
 
-        public NavMeshObstacle obstacle;
+        public UnityEngine.AI.NavMeshObstacle obstacle;
         public ActorMovementStrategy strategy;
 
         public ActorNavigationState state;

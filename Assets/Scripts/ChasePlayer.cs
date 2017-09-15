@@ -13,7 +13,7 @@ public class ChasePlayer : MonoBehaviour {
 
 	private GameObject[] players;
 	private Transform playerTarget;
-	private NavMeshAgent agent;
+	private UnityEngine.AI.NavMeshAgent agent;
 
 
 	private bool canFire = true;
@@ -22,7 +22,7 @@ public class ChasePlayer : MonoBehaviour {
 	{
 		origHealh = health;
 		players = GameObject.FindGameObjectsWithTag("Player");
-		agent = GetComponent<NavMeshAgent>() as NavMeshAgent;
+		agent = GetComponent<UnityEngine.AI.NavMeshAgent>() as UnityEngine.AI.NavMeshAgent;
 		detectPlayerCollider.enabled = false;
 
 		detectPlayerRenderer = detectPlayerCollider.transform.GetComponent<Renderer>() as Renderer;

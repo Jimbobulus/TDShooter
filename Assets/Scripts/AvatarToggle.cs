@@ -10,7 +10,7 @@ public class AvatarToggle : MonoBehaviour {
 
 	void Start () 
 	{
-		background = toggle.transform.FindChild( "Background" ).GetComponent<Image>() as Image;
+		background = toggle.transform.Find( "Background" ).GetComponent<Image>() as Image;
 		OnTogglePressed();
 	}
 
